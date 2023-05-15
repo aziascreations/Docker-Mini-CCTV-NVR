@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  cctv_recorder_cam1:
+    container_name: cctv-recorder-cam1
+    build:
+      context: .
+      dockerfile: Dockerfile_recorder
+    environment:
+      - TZ=Europe/Brussels
+      - "NP_CCTV_URL=rtsp://user:password@address:554/sub-path"
+    volumes:
+      - ./recordings/cam1:/data
+    restart: unless-stopped
+  
+  cctv_recorder_cam2:
+    container_name: cctv-recorder-cam2
+    build:
+      context: .
+      dockerfile: Dockerfile_recorder
+    environment:
+      - TZ=Europe/Brussels
+      - "NP_CCTV_URL=rtsp://user:password@address:554"
+    volumes:
+      - ./recordings/cam2:/data
+    restart: unless-stopped
+  
+  cctv_cleaner:
+    container_name: cctv-cleaner
+    build:
+      context: .
+      dockerfile: Dockerfile_cleaner
+    environment:
+      - TZ=Europe/Brussels
+    volumes:
+      - ./recordings:/data
+      - ./cleaner.py:/app/app.py:ro
+    restart: unless-stopped
+  
+  cctv_web:
+    container_name: cctv-web
+    image: php:apache
+    ports:
+      - 26880:80
+    environment:
+      - TZ=Europe/Brussels
+    volumes:
+      - ./htdocs:/var/www/html  # Cannot be "ro" since the recordings are mounted into it.
+      - ./apache2.conf:/etc/apache2/apache2.conf:ro
+      - ./recordings:/var/www/html/data:ro
+    restart: unless-stopped

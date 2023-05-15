@@ -1,0 +1,7 @@
+FROM python:3-alpine
+
+RUN apk update && apk upgrade
+
+WORKDIR /app
+
+CMD ["python", "-u", "/app/app.py"]

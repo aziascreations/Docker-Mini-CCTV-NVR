@@ -1,0 +1,11 @@
+# Prevent access to .htaccess
+<Files ~ "^.*\.([Hh][Tt][Aa]|[Pp][Yy])">
+    Require all denied
+</Files>
+
+# Fixing Apache's autistic fit with .mkv files
+AddType video/x-matroska mkv
+
+# Allowing indexes
+Options +Indexes -FollowSymlinks -ExecCGI
+ServerSignature Off
