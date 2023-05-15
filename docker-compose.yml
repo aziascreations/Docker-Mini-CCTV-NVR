@@ -32,6 +32,7 @@ services:
       dockerfile: Dockerfile_cleaner
     environment:
       - TZ=Europe/Brussels
+      - "NP_MAX_FILE_AGE_HOURS=72"
     volumes:
       - ./recordings:/data
       - ./cleaner.py:/app/app.py:ro
@@ -43,6 +44,10 @@ services:
     ports:
       - 26880:80
     environment:
+      - "NP_CAM_cam1=Camera #1"
+      - "NP_CAM_cam2=Camera #2"
+      - "NP_TITLE=NibblePoker's Mini CCTV NVR"
+      - "NP_FOOTER=Made by <i>BOZET Herwin</i>"
       - TZ=Europe/Brussels
     volumes:
       - ./htdocs:/var/www/html  # Cannot be "ro" since the recordings are mounted into it.

@@ -1,10 +1,17 @@
 <?php
-// List of all available cameras
-$camsInfo = [
-	# Format: [camId, camName]
-	["cam1", "Cam #1"],
-	["cam2", "Cam #2"]
-];
+// Grabbing the camera's info
+
+$camsInfo = [];  // Format: [[camId, camName], ...]
+
+foreach ($_ENV as $envKey => $envValue) {
+	if (strpos($envKey, 'NP_CAM_') === 0) {
+		array_push($camsInfo, [substr($envKey, strlen('NP_CAM_')), $envValue]);
+	}
+}
+
+// Grabbing the other env variables.
+$pageTitle = $_ENV['NP_TITLE'] ?? 'NibblePoker\'s Mini CCTV NVR';
+$pageFooter = $_ENV['NP_FOOTER'] ?? 'Made by <a href="https://github.com/aziascreations">BOZET Herwin</a> on <a href="https://github.com/aziascreations/Docker-Mini-CCTV-NVR">Github</a>';
 
 // Root location of all recordings.  (Not used yet)
 $rootLocation = "./data/";
@@ -102,7 +109,7 @@ function sizeFormat($bytes) {
 	<meta name="viewport"
 		  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>NibblePoker's Mini CCTV NVR</title>
+	<title><?php echo($pageTitle); ?></title>
 	<link rel="stylesheet" href="/css/simplette.all.min.css">
 	<style>
 		#video-selector {
@@ -139,13 +146,13 @@ function sizeFormat($bytes) {
 			?>
 		</ul>
 	</nav>
-	<header><h1><b>NibblePoker's Mini CCTV NVR</b></h1></header>
+	<header><h1><b><?php echo($pageTitle); ?></b></h1></header>
 	<hr><hr>
 	<div class="margin-container auto-paragraph-margin">
 		<table style="width: 100%;">
 			<tr>
 				<td>
-					<h3 style="width: 100%;">Caméra: <i><?php echo($camName); ?></i></h3>
+					<h3 style="width: 100%;">Camera: <i><?php echo($camName); ?></i></h3>
 				</td>
 				<td>
 					<span style="float: right;"><?php
@@ -201,8 +208,7 @@ function sizeFormat($bytes) {
 	</div>
 	<hr><hr>
 	<footer>
-		<!-- Feel free to change this to something less invasive, or simply stats.  Your imagination is the limit :) -->
-		<p>Made by <a href="https://github.com/aziascreations">BOZET Herwin</a> on <a href="https://github.com/aziascreations/Docker-Mini-CCTV-NVR">Github</a></p>
+		<p><?php echo($pageFooter); ?></p>
 	</footer>
 	<script>
 		<?php

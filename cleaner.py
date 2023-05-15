@@ -3,8 +3,14 @@ import signal
 import sys
 import time
 
-# Keep files for 73 hours  (3 days + 1 hours)
-MAX_FILE_AGE_SECONDS = (72 + 1) * 60 * 60
+# Keep files for 72 hours  (3 days)
+try:
+    MAX_FILE_AGE_SECONDS = int(os.environ.get('NP_MAX_FILE_AGE_HOURS', "72")) * 60 * 60
+except err:
+    print("Error: ")
+    print(err)
+    print("Using 72 hours instead !")
+    MAX_FILE_AGE_SECONDS = 72 * 60 * 60
 
 # Once done cleaning, sleep for 5 minutes
 SLEEP_TIME_SECONDS = 5 * 60
@@ -37,7 +43,7 @@ start_time = time.time()
 file_deleted_count = 0
 
 for item in os.listdir("/data/"):
-    item_path = os.path.join(folder_path, item)
+    item_path = os.path.join("/data/", item)
     
     if os.path.isdir(item_path):
         file_deleted_count = file_deleted_count + delete_old_files(item_path, start_time)
