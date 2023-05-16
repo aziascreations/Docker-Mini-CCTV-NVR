@@ -116,8 +116,8 @@ function sizeFormat($bytes) {
 			min-width: 95%;
 		}
 		video {
-			max-height: 60vh;
-			max-width: 95vw;
+			max-height: 60vh !important;
+			max-width: 95vw !important;
 			border-radius: 0.5em;
 		}
 		#skippers a {
@@ -185,7 +185,7 @@ function sizeFormat($bytes) {
 	} else {
 		// We have selected one, we add the video, slider, jumpers and filename placeholder.
 		echo("<center>");
-		echo("<video id=\"cctv-out\" controls></video>");
+		echo("<video id=\"cctv-out\" volume=\"0.5\" controls></video>");
 		echo("<br>");
 		echo("<input type=\"range\" id=\"video-selector\" min=\"0\" max=\"" . count($files) . "\" value=\"0\">");
 		echo("<br>");
@@ -309,10 +309,14 @@ function sizeFormat($bytes) {
 				// Used to keep the video's frame at a constant size.
 				// It looks like ass otherwise since it "flickers" between 2 sizes.
 				eVideo.addEventListener("playing", function() {
-					eVideo.width = eVideo.offsetWidth;
-					eVideo.height = eVideo.offsetHeight;
-					eVideo.style.minWidth = eVideo.offsetWidth+"px";
-					eVideo.style.minHeight = eVideo.offsetHeight+"px";
+					// We only change the size when not in fullscreen mode.
+					// This helps prevent sizing issues when going out of it after a new recording starts playing.
+					if(document.fullscreenElement === null) {
+						eVideo.width = eVideo.offsetWidth;
+						eVideo.height = eVideo.offsetHeight;
+						eVideo.style.minWidth = eVideo.offsetWidth+"px";
+						eVideo.style.minHeight = eVideo.offsetHeight+"px";
+					}
 				});
 				
 				// Changes the "current video" number when moving the slider.
@@ -363,6 +367,7 @@ function sizeFormat($bytes) {
 				// Starting up the player, the list updater loop and setting the currently played vid number.
 				document.getElementById("vid-count-total").textContent = files.length;
 				playNextVideo();
+				eVideo.volume = 0.5;
 				setTimeout(updateVideoList, videoListUpdateIntervalMs);
 			}
 		});
